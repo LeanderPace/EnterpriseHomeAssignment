@@ -12,5 +12,7 @@ namespace ShoppingCart.Application.Interfaces
         IQueryable<ProductViewModel> GetProducts();
 
         //void RateProduct(Guid id, string comment, double rating);
+
+        ProductViewModel GetProduct(Guid id);
     }
 }

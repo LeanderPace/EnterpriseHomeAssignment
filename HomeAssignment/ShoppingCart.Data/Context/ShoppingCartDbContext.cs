@@ -22,6 +22,11 @@ namespace ShoppingCart.Data.Context
             modelBuilder.Entity<Product>().Property(x => x.Id).HasDefaultValueSql("NEWID()"); 
         } 
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies();
+        }
+
 
         //PM> Add-Migration "-Migration Name-" -Context ShoppingCartDbContext 
         //PM> Update-Database -Context ShoppingCartDbContext

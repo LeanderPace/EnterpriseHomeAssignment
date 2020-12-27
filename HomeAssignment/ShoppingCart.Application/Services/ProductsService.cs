@@ -15,6 +15,8 @@ namespace ShoppingCart.Application.Services
         {
             _productRepo = productRepo;
         }
+
+
         public IQueryable<ProductViewModel> GetProducts()
         {
             var list = from p in _productRepo.GetProducts()
@@ -33,6 +35,23 @@ namespace ShoppingCart.Application.Services
 
                        };
             return list;
+        }
+        public ProductViewModel GetProduct(Guid id)
+        {
+            ProductViewModel myViewModel = new ProductViewModel();
+            var productFromDb = _productRepo.GetProduct(id);
+
+            myViewModel.Description = productFromDb.Description;
+            myViewModel.Id = productFromDb.Id;
+            myViewModel.ImageUrl = productFromDb.ImageUrl;
+            myViewModel.Name = productFromDb.Name;
+            myViewModel.Price = productFromDb.Price;
+
+            myViewModel.Category = new CategoryViewModel();
+            myViewModel.Category.Id = productFromDb.Category.Id;
+            myViewModel.Category.Name = productFromDb.Category.Name;
+
+            return myViewModel;
         }
     }
 }

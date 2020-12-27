@@ -15,8 +15,13 @@ namespace ShoppingCart.Domain.Models
 
         [Required]
         public double Price { get; set; }
+
+        [Required]
         public string Description { get; set; }
+
         public string ImageUrl { get; set; }
-        public Category Category { get; set; }
+
+        [Required]
+        public virtual Category Category { get; set; }
     }
 }
