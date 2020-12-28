@@ -16,6 +16,7 @@
                         <h5 class="card-title">@prod.Name</h5>
                         <p class="card-text">€@prod.Price</p>
                         <a href="Products/Details?id=@prod.Id" class="btn btn-primary">Book Description</a>
+                        <a href="Products/Delete?id=@prod.Id" onclick="return window.confirm('Are you sure you want to delete this product')" class="btn btn-danger">Delete</a>
                     </div>
                 </div>
             </div>

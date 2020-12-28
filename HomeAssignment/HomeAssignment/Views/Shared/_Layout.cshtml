@@ -41,16 +41,16 @@
             @RenderBody()
             <br>
 
-            @if (ViewData["feedback"] != null)
+            @if (TempData["feedback"] != null)
             {
                 <div class="alert alert-success text-center" role="alert">
-                    @ViewData["feedback"]
+                    @TempData["feedback"]
                 </div>
             }
-            else if (ViewData["danger"] != null)
+            else if (TempData["danger"] != null)
             {
                 <div class="alert alert-danger text-center" role="alert">
-                    @ViewData["danger"]
+                    @TempData["danger"]
                 </div>
             }
         </main>
