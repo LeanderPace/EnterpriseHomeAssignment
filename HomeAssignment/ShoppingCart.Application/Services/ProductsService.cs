@@ -1,4 +1,6 @@
-﻿using ShoppingCart.Application.Interfaces;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ShoppingCart.Application.Interfaces;
 using ShoppingCart.Application.ViewModels;
 using ShoppingCart.Domain.Interfaces;
 using ShoppingCart.Domain.Models;
@@ -12,15 +14,18 @@ namespace ShoppingCart.Application.Services
     public class ProductsService : IProductsService
     {
         private IProductsRepository _productRepo;
-        public ProductsService(IProductsRepository productRepo)
+        private IMapper _mapper;
+        public ProductsService(IProductsRepository productRepo, IMapper mapper)
         {
             _productRepo = productRepo;
+            _mapper = mapper;
         }
-
 
         public IQueryable<ProductViewModel> GetProducts()
         {
-            var list = from p in _productRepo.GetProducts()
+            return _productRepo.GetProducts().ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider);
+
+            /*var list = from p in _productRepo.GetProducts()
                        select new ProductViewModel()
                        {
                            Id = p.Id,
@@ -35,12 +40,16 @@ namespace ShoppingCart.Application.Services
                                }
 
                        };
-            return list;
+            return list;*/
         }
         public ProductViewModel GetProduct(Guid id)
         {
-            ProductViewModel myViewModel = new ProductViewModel();
-            var productFromDb = _productRepo.GetProduct(id);
+            Product product = _productRepo.GetProduct(id);
+            var resultingProductViewModel = _mapper.Map<ProductViewModel>(product);
+
+            return resultingProductViewModel;
+
+            /*var productFromDb = _productRepo.GetProduct(id);
 
             myViewModel.Description = productFromDb.Description;
             myViewModel.Id = productFromDb.Id;
@@ -52,18 +61,20 @@ namespace ShoppingCart.Application.Services
             myViewModel.Category.Id = productFromDb.Category.Id;
             myViewModel.Category.Name = productFromDb.Category.Name;
 
-            return myViewModel;
+            return myViewModel;*/
         }
 
         public void AddProduct(ProductViewModel data)
         {
-            Product p = new Product();
+            var p = _mapper.Map<Product>(data);
+
+            /*Product p = new Product();
 
             p.Name = data.Name;
             p.Description = data.Description;
             p.Price = data.Price;
             p.ImageUrl = data.ImageUrl;
-            p.CategoryId = data.Category.Id;
+            p.CategoryId = data.Category.Id; */
 
             _productRepo.AddProduct(p);
         }

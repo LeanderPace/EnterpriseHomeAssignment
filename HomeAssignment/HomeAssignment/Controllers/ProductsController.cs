@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,8 +34,9 @@ namespace HomeAssignment.Controllers
             var myProduct = _productsService.GetProduct(id);
             return View(myProduct);
         }
-
+        
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             var catList = _categoriesService.GetCategories();
@@ -44,6 +46,7 @@ namespace HomeAssignment.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(ProductViewModel data, IFormFile file)
         {
             try
@@ -79,6 +82,7 @@ namespace HomeAssignment.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(Guid id)
         {
             _productsService.DeleteProduct(id);
