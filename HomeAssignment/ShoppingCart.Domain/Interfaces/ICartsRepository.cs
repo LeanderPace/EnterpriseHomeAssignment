@@ -6,19 +6,19 @@ using System.Text;
 
 namespace ShoppingCart.Domain.Interfaces
 {
-    interface ICartRepository
+    public interface ICartsRepository
     {
-        IQueryable<Cart> GetCartProducts();
+        IQueryable<Cart> GetCartProducts(string email);
 
-        Cart GetCartProduct(Guid id);
+        Cart GetCartProduct(string email, Guid id);
 
         void AddCartProduct(Cart cartProduct);
 
-        void DeleteCartProduct(Guid id);
+        void DeleteCartProduct(string email, Guid id);
 
-        void UpdateCartProduct(Cart cartProduct);
+        void UpdateCartProduct(Cart cart);
 
         void CheckOut(Order order);
-     
+    
     }
 }

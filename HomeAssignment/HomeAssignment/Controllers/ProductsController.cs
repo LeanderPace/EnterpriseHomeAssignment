@@ -15,12 +15,14 @@ namespace HomeAssignment.Controllers
     {
         private IProductsService _productsService;
         private ICategoriesService _categoriesService;
+        private ICartsService _cartsService;
         private IWebHostEnvironment _environment;
-        public ProductsController(IProductsService productsService, 
+        public ProductsController(IProductsService productsService, ICartsService cartsService,
             ICategoriesService categoriesService, IWebHostEnvironment environment)
         {
             _productsService = productsService;
             _categoriesService = categoriesService;
+            _cartsService = cartsService;
             _environment = environment;
         }
         public IActionResult Index()
@@ -87,6 +89,14 @@ namespace HomeAssignment.Controllers
         {
             _productsService.DeleteProduct(id);
             TempData["feedback"] = "Product was deleted successfully";
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult AddToCart(Guid pId)
+        {
+            string email = User.Identity.Name;
+            _cartsService.AddCartProduct(pId, email);
+            TempData["feedback"] = "Product added to cart successfully";
             return RedirectToAction("Index");
         }
     }

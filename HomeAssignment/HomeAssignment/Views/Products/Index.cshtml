@@ -6,14 +6,6 @@
 <h1 class="text-center">Products Catalogue</h1>
 <br>
 <div class="container">
-    <label for="cars">Filter By:</label>
-
-    <select name="cars" id="cars">
-        <option value="volvo">Volvo</option>
-        <option value="saab">Saab</option>
-        <option value="mercedes">Mercedes</option>
-        <option value="audi">Audi</option>
-    </select>
     <br>
     <div class="row">
         @Html.Partial("ShowProductsPartial", Model)
