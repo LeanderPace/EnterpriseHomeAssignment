@@ -38,5 +38,11 @@ namespace ShoppingCart.Data.Repositories
         {
             return _context.Products;
         }
+
+        public void UpdateProduct(Product p)
+        {
+            _context.Products.Update(p);
+            _context.SaveChanges();
+        }
     }
 }

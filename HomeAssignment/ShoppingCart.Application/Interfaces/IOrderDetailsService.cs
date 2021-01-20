@@ -4,8 +4,8 @@ using System.Text;
 
 namespace ShoppingCart.Application.Interfaces
 {
-    public interface IOrdersService
+    public interface IOrderDetailsService
     {
-        void createOrder(string email, DateTime createdDate, double price);
+        void FinalOrder(string email, DateTime createdDate);
     }
 }

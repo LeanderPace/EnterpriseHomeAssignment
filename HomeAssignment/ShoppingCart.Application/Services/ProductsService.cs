@@ -24,23 +24,6 @@ namespace ShoppingCart.Application.Services
         public IQueryable<ProductViewModel> GetProducts()
         {
             return _productRepo.GetProducts().ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider);
-
-            /*var list = from p in _productRepo.GetProducts()
-                       select new ProductViewModel()
-                       {
-                           Id = p.Id,
-                           Name = p.Name,
-                           Price = p.Price,
-                           Description = p.Description,
-                           ImageUrl = p.ImageUrl,
-
-                           Category = new CategoryViewModel() {
-                                   Id = p.Category.Id,
-                                   Name = p.Category.Name
-                               }
-
-                       };
-            return list;*/
         }
         public ProductViewModel GetProduct(Guid id)
         {
@@ -48,33 +31,11 @@ namespace ShoppingCart.Application.Services
             var resultingProductViewModel = _mapper.Map<ProductViewModel>(product);
 
             return resultingProductViewModel;
-
-            /*var productFromDb = _productRepo.GetProduct(id);
-
-            myViewModel.Description = productFromDb.Description;
-            myViewModel.Id = productFromDb.Id;
-            myViewModel.ImageUrl = productFromDb.ImageUrl;
-            myViewModel.Name = productFromDb.Name;
-            myViewModel.Price = productFromDb.Price;
-
-            myViewModel.Category = new CategoryViewModel();
-            myViewModel.Category.Id = productFromDb.Category.Id;
-            myViewModel.Category.Name = productFromDb.Category.Name;
-
-            return myViewModel;*/
         }
 
         public void AddProduct(ProductViewModel data)
         {
             var p = _mapper.Map<Product>(data);
-
-            /*Product p = new Product();
-
-            p.Name = data.Name;
-            p.Description = data.Description;
-            p.Price = data.Price;
-            p.ImageUrl = data.ImageUrl;
-            p.CategoryId = data.Category.Id; */
 
             _productRepo.AddProduct(p);
         }
@@ -85,6 +46,13 @@ namespace ShoppingCart.Application.Services
             {
                 _productRepo.DeleteProduct(id);
             }
+        }
+
+        public void UpdateProduct(Guid id, int quantity)
+        {
+            Product p = _productRepo.GetProduct(id);
+            p.Quantity =- quantity;
+            _productRepo.UpdateProduct(p);
         }
     }
 }

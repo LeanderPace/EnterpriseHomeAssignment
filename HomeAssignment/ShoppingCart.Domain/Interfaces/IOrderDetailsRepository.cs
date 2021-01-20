@@ -1,13 +1,13 @@
 ﻿using ShoppingCart.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ShoppingCart.Domain.Interfaces
 {
-    public interface IOrdersRepository
+    public interface IOrderDetailsRepository
     {
-        Order GetOrder(string email, DateTime createdDate);
-        void CreateOrder(Order order);
+        void AddOrderDetails(OrderDetails od);
     }
 }

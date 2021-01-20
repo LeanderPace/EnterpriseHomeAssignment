@@ -92,6 +92,7 @@ namespace HomeAssignment.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize]
         public IActionResult AddToCart(Guid pId)
         {
             string email = User.Identity.Name;
