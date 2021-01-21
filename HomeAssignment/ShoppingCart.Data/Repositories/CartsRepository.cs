@@ -21,11 +21,6 @@ namespace ShoppingCart.Data.Repositories
             _context.SaveChanges();
         }
 
-        public void CheckOut(Order order)
-        {
-            throw new NotImplementedException();
-        }
-
         public void DeleteCartProduct(string email, Guid id)
         {
             var myProduct = GetCartProduct(email, id);

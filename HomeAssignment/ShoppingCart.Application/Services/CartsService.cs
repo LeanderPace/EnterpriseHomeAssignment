@@ -25,6 +25,7 @@ namespace ShoppingCart.Application.Services
         public void AddCartProduct(Guid pId, string email)
         {
             Cart cart = _cartRepo.GetCartProduct(email, pId);
+
             if(cart == null)
             {
                 Cart p = new Cart();
@@ -36,11 +37,6 @@ namespace ShoppingCart.Application.Services
             {
                 UpdateCartProduct(email, pId);
             }
-        }
-
-        public void CheckOut(Order order)
-        {
-            throw new NotImplementedException();
         }
 
         public void DeleteCartProduct(string email, Guid id)

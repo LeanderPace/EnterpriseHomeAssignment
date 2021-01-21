@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using ShoppingCart.Application.Interfaces;
 using ShoppingCart.Application.ViewModels;
 
@@ -17,34 +18,65 @@ namespace HomeAssignment.Controllers
         private ICategoriesService _categoriesService;
         private ICartsService _cartsService;
         private IWebHostEnvironment _environment;
+        private readonly ILogger<ProductsController> _logger;
         public ProductsController(IProductsService productsService, ICartsService cartsService,
-            ICategoriesService categoriesService, IWebHostEnvironment environment)
+            ICategoriesService categoriesService, IWebHostEnvironment environment, ILogger<ProductsController> logger)
         {
             _productsService = productsService;
             _categoriesService = categoriesService;
             _cartsService = cartsService;
             _environment = environment;
+            _logger = logger;
         }
-        public IActionResult Index()
+        public IActionResult Index(string category)
         {
-            var list = _productsService.GetProducts();
-            return View(list);
+            try
+            {
+                _logger.LogInformation("Loading Products");
+                var list = _productsService.GetProducts(category);
+                return View(list);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogWarning("Something went wrong");
+                _logger.LogError(ex.Message);
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         public IActionResult Details(Guid id)
         {
-            var myProduct = _productsService.GetProduct(id);
-            return View(myProduct);
+            try
+            {
+                _logger.LogInformation("Accessing Product Details");
+                var myProduct = _productsService.GetProduct(id);
+                return View(myProduct);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogWarning("Something went wrong");
+                _logger.LogError(ex.Message);
+                return RedirectToAction("Error", "Home");
+            }
         }
         
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
-            var catList = _categoriesService.GetCategories();
-            ViewBag.Categories = catList;
-
-            return View();
+            try
+            {
+                _logger.LogInformation("Accessing Create Product");
+                var catList = _categoriesService.GetCategories();
+                ViewBag.Categories = catList;
+                return View();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogWarning("Something went wrong");
+                _logger.LogError(ex.Message);
+                return RedirectToAction("Error", "Home");
+            }       
         }
 
         [HttpPost]
@@ -70,12 +102,15 @@ namespace HomeAssignment.Controllers
                 }
 
                 _productsService.AddProduct(data);
-                TempData["feedback"] = "Product was added successfully";
+                TempData["feedback"] = "Product was added successfully"; 
+                _logger.LogInformation("Successfully Added a Product");
                 ModelState.Clear();
             }
             catch(Exception ex)
             {
-                TempData["danger"] = "Something went wrong";
+                TempData["danger"] = "Something went wrong"; 
+                _logger.LogWarning("Something went wrong");
+                _logger.LogError(ex.Message);
             }
 
             var catList = _categoriesService.GetCategories();
@@ -87,17 +122,37 @@ namespace HomeAssignment.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult Delete(Guid id)
         {
-            _productsService.DeleteProduct(id);
-            TempData["feedback"] = "Product was deleted successfully";
-            return RedirectToAction("Index");
+            try
+            {
+                _productsService.DeleteProduct(id);
+                TempData["feedback"] = "Product was deleted successfully"; 
+                _logger.LogInformation("Deleted Product " + id);
+                return RedirectToAction("Index");
+            }
+            catch(Exception ex)
+            {
+                _logger.LogWarning("Something went wrong");
+                _logger.LogError(ex.Message);
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [Authorize]
         public IActionResult AddToCart(Guid pId)
         {
-            string email = User.Identity.Name;
-            _cartsService.AddCartProduct(pId, email);
-            TempData["feedback"] = "Product added to cart successfully";
+            try
+            {
+                string email = User.Identity.Name;
+                _cartsService.AddCartProduct(pId, email);
+                _logger.LogInformation("Product was added to cart " + pId);
+                TempData["feedback"] = "Product added to cart successfully";
+            }
+            catch(Exception ex)
+            {
+                TempData["danger"] = "Something went wrong";
+                _logger.LogWarning("Something went wrong");
+                _logger.LogError(ex.Message);
+            }
             return RedirectToAction("Index");
         }
     }

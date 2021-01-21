@@ -6,8 +6,14 @@
 <h1 class="text-center">Products Catalogue</h1>
 <br>
 <div class="container">
+    <label>Choose a category:</label><br>
+    <a href="/Products/Index?category=Hardback" class="btn btn-primary">Hardback</a>
+    <a href="/Products/Index?category=Paperback" class="btn btn-primary">Paperback</a>
+    <a href="/Products/Index" class="btn btn-success">Refresh</a>
+
     <br>
     <div class="row">
+
         @Html.Partial("ShowProductsPartial", Model)
     </div>
 </div>

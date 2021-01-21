@@ -20,7 +20,17 @@ namespace HomeAssignment.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            try
+            {
+                _logger.LogInformation("Index started");
+                return View();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogWarning("Something went wrong");
+                _logger.LogError(ex.Message);
+                return Error();
+            }
         }
 
         public IActionResult Privacy()

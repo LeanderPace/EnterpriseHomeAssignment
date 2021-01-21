@@ -21,9 +21,18 @@ namespace ShoppingCart.Application.Services
             _mapper = mapper;
         }
 
-        public IQueryable<ProductViewModel> GetProducts()
+        public IQueryable<ProductViewModel> GetProducts(string category)
         {
-            return _productRepo.GetProducts().ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider);
+            if(category == null)
+            {
+                return _productRepo.GetProducts().ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider);
+                
+            }
+            else
+            {
+                return _productRepo.GetProducts().Where(x => x.Category.Name == category).ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider);
+            }
+            
         }
         public ProductViewModel GetProduct(Guid id)
         {
@@ -51,7 +60,7 @@ namespace ShoppingCart.Application.Services
         public void UpdateProduct(Guid id, int quantity)
         {
             Product p = _productRepo.GetProduct(id);
-            p.Quantity =- quantity;
+            p.Quantity = p.Quantity - quantity;
             _productRepo.UpdateProduct(p);
         }
     }
