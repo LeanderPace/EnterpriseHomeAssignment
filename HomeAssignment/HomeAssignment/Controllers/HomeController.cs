@@ -22,14 +22,13 @@ namespace HomeAssignment.Controllers
         {
             try
             {
-                _logger.LogInformation("Index started");
+                _logger.LogInformation("Loading Home Page");
                 return View();
             }
             catch(Exception ex)
             {
-                _logger.LogWarning("Something went wrong");
                 _logger.LogError(ex.Message);
-                return Error();
+                return RedirectToAction("Error");
             }
         }
 

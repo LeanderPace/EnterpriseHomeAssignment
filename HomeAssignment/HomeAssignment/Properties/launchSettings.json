@@ -31,9 +31,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
-      },
-      "remoteDebugEnabled": false,
-      "applicationUrl": "https://localhost:59235"
+      }
     }
   }
 }

@@ -18,9 +18,9 @@ namespace HomeAssignment.Controllers
         private ICategoriesService _categoriesService;
         private ICartsService _cartsService;
         private IWebHostEnvironment _environment;
-        private readonly ILogger<ProductsController> _logger;
+        private readonly ILogger<HomeController> _logger;
         public ProductsController(IProductsService productsService, ICartsService cartsService,
-            ICategoriesService categoriesService, IWebHostEnvironment environment, ILogger<ProductsController> logger)
+            ICategoriesService categoriesService, IWebHostEnvironment environment, ILogger<HomeController> logger)
         {
             _productsService = productsService;
             _categoriesService = categoriesService;
@@ -32,13 +32,12 @@ namespace HomeAssignment.Controllers
         {
             try
             {
-                _logger.LogInformation("Loading Products");
+                _logger.LogInformation("Accessing the products page");
                 var list = _productsService.GetProducts(category);
                 return View(list);
             }
             catch(Exception ex)
             {
-                _logger.LogWarning("Something went wrong");
                 _logger.LogError(ex.Message);
                 return RedirectToAction("Error", "Home");
             }
@@ -48,16 +47,16 @@ namespace HomeAssignment.Controllers
         {
             try
             {
-                _logger.LogInformation("Accessing Product Details");
+                _logger.LogInformation("Accessing Information of Product " + id);
                 var myProduct = _productsService.GetProduct(id);
                 return View(myProduct);
             }
             catch(Exception ex)
             {
-                _logger.LogWarning("Something went wrong");
                 _logger.LogError(ex.Message);
-                return RedirectToAction("Error", "Home");
+                return RedirectToAction("Error");
             }
+
         }
         
         [HttpGet]
@@ -66,17 +65,16 @@ namespace HomeAssignment.Controllers
         {
             try
             {
-                _logger.LogInformation("Accessing Create Product");
+                _logger.LogInformation("Accessing the Add Product Page");
                 var catList = _categoriesService.GetCategories();
                 ViewBag.Categories = catList;
                 return View();
             }
             catch(Exception ex)
             {
-                _logger.LogWarning("Something went wrong");
                 _logger.LogError(ex.Message);
-                return RedirectToAction("Error", "Home");
-            }       
+                return RedirectToAction("Error");
+            }
         }
 
         [HttpPost]
@@ -102,14 +100,13 @@ namespace HomeAssignment.Controllers
                 }
 
                 _productsService.AddProduct(data);
-                TempData["feedback"] = "Product was added successfully"; 
+                TempData["feedback"] = "Product was added successfully";
                 _logger.LogInformation("Successfully Added a Product");
                 ModelState.Clear();
             }
             catch(Exception ex)
             {
                 TempData["danger"] = "Something went wrong"; 
-                _logger.LogWarning("Something went wrong");
                 _logger.LogError(ex.Message);
             }
 
@@ -126,15 +123,16 @@ namespace HomeAssignment.Controllers
             {
                 _productsService.DeleteProduct(id);
                 TempData["feedback"] = "Product was deleted successfully"; 
-                _logger.LogInformation("Deleted Product " + id);
+                _logger.LogInformation("Successfully Deleted Product " + id);
                 return RedirectToAction("Index");
             }
             catch(Exception ex)
             {
-                _logger.LogWarning("Something went wrong");
+                TempData["danger"] = "Something went wrong";
                 _logger.LogError(ex.Message);
-                return RedirectToAction("Error", "Home");
+                return RedirectToAction("Index");
             }
+
         }
 
         [Authorize]
@@ -144,16 +142,17 @@ namespace HomeAssignment.Controllers
             {
                 string email = User.Identity.Name;
                 _cartsService.AddCartProduct(pId, email);
-                _logger.LogInformation("Product was added to cart " + pId);
-                TempData["feedback"] = "Product added to cart successfully";
+                TempData["feedback"] = "Product added to cart successfully"; 
+                _logger.LogInformation(email + " Successfully added Product " + pId);
+                return RedirectToAction("Index");
             }
             catch(Exception ex)
             {
                 TempData["danger"] = "Something went wrong";
-                _logger.LogWarning("Something went wrong");
                 _logger.LogError(ex.Message);
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+
         }
     }
 }

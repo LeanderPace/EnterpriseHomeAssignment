@@ -14,9 +14,9 @@ namespace HomeAssignment.Controllers
         private ICartsService _cartsService;
         private IOrdersService _ordersService;
         private IOrderDetailsService _orderDetailsService;
-        private readonly ILogger<ProductsController> _logger;
+        private readonly ILogger<HomeController> _logger;
         public CartsController(ICartsService cartsService, IOrdersService ordersService,
-            IOrderDetailsService orderDetailsService, ILogger<ProductsController> logger)
+            IOrderDetailsService orderDetailsService, ILogger<HomeController> logger)
         {
             _cartsService = cartsService;
             _ordersService = ordersService;
@@ -27,16 +27,14 @@ namespace HomeAssignment.Controllers
         [Authorize]
         public IActionResult Index(string email)
         {
-            var cartList = _cartsService.GetCartProducts(email);
-
             try
             {
-                _logger.LogInformation("Accessing Cart");
+                _logger.LogInformation("Accessing the Cart");
+                var cartList = _cartsService.GetCartProducts(email);
                 return View(cartList);
             }
             catch(Exception ex)
             {
-                _logger.LogWarning("Something went wrong");
                 _logger.LogError(ex.Message);
                 return RedirectToAction("Error", "Home");
             }
@@ -45,43 +43,44 @@ namespace HomeAssignment.Controllers
         [Authorize]
         public IActionResult Delete(Guid id)
         {
-            try
-            {
-                string email = User.Identity.Name;
-                _cartsService.DeleteCartProduct(email, id);
-                TempData["feedback"] = "Product was deleted successfully";
-                _logger.LogInformation("Product was deleted from cart successfully " + id);
-                return RedirectToAction("Index", new { Email = email });
+            string email = User.Identity.Name;
 
+            try
+            {        
+                _cartsService.DeleteCartProduct(email, id);
+                _logger.LogInformation("Successfully delete product " + id + " from Cart.");
+                TempData["feedback"] = "Product was deleted successfully";
+                return RedirectToAction("Index", new { Email = email });
             }
             catch(Exception ex)
             {
-                _logger.LogWarning("Something went wrong");
+                TempData["danger"] = "Something went wrong";
                 _logger.LogError(ex.Message);
-                return RedirectToAction("Error", "Home");
+                return RedirectToAction("Index", new { Email = email });
             }
-
         }
 
         [Authorize]
         public IActionResult CheckOut(double price)
         {
+            string email = User.Identity.Name;
+            DateTime createdDate = System.DateTime.Now;
+
             try
             {
-                string email = User.Identity.Name;
-                DateTime createdDate = System.DateTime.Now;
                 _ordersService.createOrder(email, createdDate, price);
                 _orderDetailsService.FinalOrder(email, createdDate); 
-                _logger.LogInformation("User checked out successfully");
+                _logger.LogInformation("User Checked out successfully");
                 return RedirectToAction("Index", "Products");
+
             }
             catch(Exception ex)
             {
-                _logger.LogWarning("Something went wrong");
                 _logger.LogError(ex.Message);
-                return RedirectToAction("Error", "Home");
+                return RedirectToAction("Error");
             }
-            
+
+
         }
     }
 }

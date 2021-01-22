@@ -11,6 +11,8 @@ namespace ShoppingCart.Application.Interfaces
     {
         void AddCartProduct(Guid pId, string email);
 
+        void CheckOut(Order order);
+
         void DeleteCartProduct(string email, Guid id);
 
         CartViewModel GetCartProduct(string email, Guid id);

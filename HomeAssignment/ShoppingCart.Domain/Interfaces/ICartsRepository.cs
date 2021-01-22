@@ -16,6 +16,9 @@ namespace ShoppingCart.Domain.Interfaces
 
         void DeleteCartProduct(string email, Guid id);
 
-        void UpdateCartProduct(Cart cart);  
+        void UpdateCartProduct(Cart cart);
+
+        void CheckOut(Order order);
+    
     }
 }

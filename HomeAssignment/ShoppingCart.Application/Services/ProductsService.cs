@@ -23,14 +23,13 @@ namespace ShoppingCart.Application.Services
 
         public IQueryable<ProductViewModel> GetProducts(string category)
         {
-            if(category == null)
+            if(category != null)
             {
-                return _productRepo.GetProducts().ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider);
-                
+                return _productRepo.GetProducts().Where(x => x.Category.Name == category).ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider);
             }
             else
             {
-                return _productRepo.GetProducts().Where(x => x.Category.Name == category).ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider);
+                return _productRepo.GetProducts().ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider);
             }
             
         }
